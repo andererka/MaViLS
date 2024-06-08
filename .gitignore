@@ -1,0 +1,9 @@
+/video/
+/local_settings.py
+*png
+/dataset_MaViLS
+split_page.py
+/data/video
+/mavils/time.txt
+video_list_youtube.txt
+/__pycache__/
