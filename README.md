@@ -1,5 +1,7 @@
-# MaViLS algorithm
-This repository presents an algorithm to match audioscripts to PDF slides based on OCR, image features and audioscript content or even the combination of the three. It introduces a jump penality that punishes jumps between non-consecutive slides. For further details, we refer to our paper 'MaViLS, a Benchmark Dataset for Video-to-Slide Alignment, Assessing Baseline Accuracy with a Multimodal Alignment Algorithm Leveraging Speech, OCR, and Visual Features' (link to paper is following) and the short overview and description of the code's structure below.
+# MaViLS, a Benchmark Dataset for Video-to-Slide Alignment, Assessing Baseline Accuracy with a Multimodal Alignment Algorithm Leveraging Speech, OCR, and Visual Features
+*Katharina Anderer, Andreas Reich, Matthias Wölfel (2024)*
+
+This repository presents the algorithm and evaluation, as well as the dataset for the paper above.
 
 ### Overview
 
