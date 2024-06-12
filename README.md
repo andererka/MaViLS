@@ -24,6 +24,8 @@ The results folder includes results from all the example lectures included in th
 
 An empty folder named 'frame_images' should exist that is collecting the video frames during the time the matching algorithm is run. 
 
+The jupyter_notbook folder includes code to reproduce the figures of the paper.
+
 ## How to run matching algorithm
 
 The matching algorithm can be found in the mavils folder. In order to run it, first install the neceasry packages (ideally in a new conda environment). This can be done with:
