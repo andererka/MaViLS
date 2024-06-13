@@ -23,16 +23,8 @@ import pytesseract
 pytesseract.pytesseract.tesseract_cmd = path_to_tesseract
 from tqdm import tqdm
 
-def main(args):
-    autoimage_name = args.autoimage_name
-    sentence_model_name = args.sentence_model
-    audio_script = args.audio_script
-    video_path = args.video_path
-    jump_penalty = args.jump_penalty
-    pdf_path = args.file_path
-    file_name = args.file_name
-    merge_method = args.merge_method
-    sift = args.sift
+def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/swiftformer-xs',
+         sentence_model_name='sentence-transformers/distiluse-base-multilingual-cased', jump_penalty=0.1, merge_method='max', sift=False):
 
     # Load the sentence transformer model
     sentence_model = SentenceTransformer(sentence_model_name)
@@ -58,7 +50,7 @@ def main(args):
 
     print('len frames', len(frames))
     # Step 2: Convert PDF to images
-    pdf_file = fitz.open(pdf_path)
+    pdf_file = fitz.open(file_path)
     # Iterate over PDF pages
     text_pdf = []
     pdf_images = []
@@ -194,16 +186,15 @@ def main(args):
     elif merge_method == 'max':
         similarity_matrix_merged = np.max((similarity_matrix_ocr, similarity_matrix_audio, similarity_matrix_image), axis=0)
 
-        for linearity_penality in [0.001, 0.1, 1, 2]:
-            optimal_path, _ = calculate_dp_with_jumps(similarity_matrix_merged, jump_penalty, linearity_penalty=linearity_penality)
+        optimal_path, _ = calculate_dp_with_jumps(similarity_matrix_merged, jump_penalty)
 
-            result_dict = {}
-            for chunk_index in optimal_path:
-                result_dict[interval_list[chunk_index[0]]] =  chunk_index[1] + 1
+        result_dict = {}
+        for chunk_index in optimal_path:
+            result_dict[interval_list[chunk_index[0]]] =  chunk_index[1] + 1
 
-            df = pd.DataFrame(list(result_dict.items()), columns=['Key', 'Value'])
-            # writing results regarding max merge to excel sheet
-            df.to_excel('{}_max_matching_all_{}_linearity{}.xlsx'.format(file_name, jump_penality_string, str(linearity_penality)), index=False, engine='openpyxl')
+        df = pd.DataFrame(list(result_dict.items()), columns=['Key', 'Value'])
+        # writing results regarding max merge to excel sheet
+        df.to_excel('{}_max_matching_all_{}.xlsx'.format(file_name, jump_penality_string), index=False, engine='openpyxl')
 
     elif merge_method=='all':
         similarity_matrix_merged = np.mean((similarity_matrix_ocr, similarity_matrix_audio, similarity_matrix_image), axis=0)
@@ -308,15 +299,15 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="This script matches videoframes to lecture slides")
 
 
-    parser.add_argument('--sentence_model', default='sentence-transformers/distiluse-base-multilingual-cased', type=str, required=False,
+    parser.add_argument('--sentence_model', nargs='?', default='sentence-transformers/distiluse-base-multilingual-cased', type=str, required=False,
                         help='sentence transformer model')
-    parser.add_argument('--jump_penalty', default=0.1, type=str, required=False,
+    parser.add_argument('--jump_penalty', nargs='?', default=0.1, type=str, required=False,
                         help='penality for large jumps')
-    parser.add_argument('--autoimage_name', default="MBZUAI/swiftformer-xs", type=str, required=False,
+    parser.add_argument('--autoimage_name', nargs='?', default="MBZUAI/swiftformer-xs", type=str, required=False,
                         help='model for visual features')
-    parser.add_argument('--merge_method', default='max', type=str, required=False,
+    parser.add_argument('--merge_method', nargs='?', default='max', type=str, required=False,
                         help='merge method for different features; either mean or max')
-    parser.add_argument('--sift', default=False, type=bool, required=False,
+    parser.add_argument('--sift', nargs='?', default=False, type=bool, required=False,
                         help='running SIFT argument or not. Default is False')
     parser.add_argument('--audio_script', default='../data/audioscripts/numerics_hennig.srt', type=str, required=False,
                         help='path to audioscript')
@@ -324,10 +315,13 @@ if __name__ == '__main__':
                         help='path to file')
     parser.add_argument('--video_path', default='../data/video/numerics_high_res.mp4', type=str, required=False,
                         help='path to lecture video')
-    parser.add_argument('--file_name', default='../results/numerics_tuebingen', type=str, required=False,
+    parser.add_argument('--file_name', nargs='?', default='../results/default', type=str, required=False,
                         help='name of result file')
 
     args = parser.parse_args()
 
-    main(args)
+    main(video_path = args.video_path, file_name=args.file_name,
+         file_path=args.file_path, audio_script=args.audio_script, 
+         sift=args.sift, merge_method=args.merge_method, autoimage_name=args.autoimage_name, 
+         jump_penalty=args.jump_penaty, sentence_model=args.sentence_model)
 
