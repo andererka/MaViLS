@@ -53,11 +53,17 @@ In order to change the merge method, you can add the option --merge_method. Defa
 The following other options exist:
 
 * --sentence_model that sets the sentence transformer model. Default is ''sentence-transformers/distiluse-base-multilingual-cased' but could be changed
+
 * autoimage_name that sets the image processor and model. Default is 'MBZUAI/swiftformer-xs'
+
 * --sift that is either false or true, depending whether one want to run the SIFT algorithm for comparison. This is much time-consuming if set to true.
+
 * --audio_script. Path to the audioscript
+
 * --file_path. Path to the lecture PDF
+
 * --video_path. Path to the video recording of the according lecture
+
 * --file_name. Path to the result file that is created through the processing of the script.
 
 ### Running with Tkinter app
