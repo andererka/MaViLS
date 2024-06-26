@@ -60,6 +60,18 @@ The following other options exist:
 * --video_path. Path to the video recording of the according lecture
 * --file_name. Path to the result file that is created through the processing of the script.
 
+### Running with Tkinter app
+
+A very easy way to run the code (but with limited settings) is to simply run the 'tkinter_app.py' file in the mavils folder with 
+```python tkinter_app.py```
+One can upoload the necessary files via upload buttons. Processing can take a while, depending on length of video and local hardware. 
+
+## License
+We release this code under the Apache-2.0 license. 
+
+## Citations
+Please cite this work with..
+
 
 
 
