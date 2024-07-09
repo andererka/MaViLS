@@ -1,6 +1,8 @@
 import pandas as pd
 from sklearn.metrics import f1_score, precision_score, recall_score
 
+# This file calculates F1 score, pecision and recall scores for all lectures and stores it in according excel files like 'results_F1.xlsx', 'results_precision.xlsx' and 'results_recall.xlsx'.
+
 
 # Specify the column names
 column_names = ['Lecture name', 'OCR 0.1', 'Audio 0.1', 'Images 0.1', 'All 0.0 mean', 'All 0.1 mean', 

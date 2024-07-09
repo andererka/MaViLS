@@ -4,6 +4,7 @@
 This repository presents the algorithm and evaluation, as well as the dataset for the paper above.
 
 ### Overview
+![Overview of MaViLS algorithm](overview.svg)
 
 The algorithm aligns lecture videos with corresponding slides with a multimodal algorithm that uses audio, OCR and image features all together. The approach uses dynamic programming to include a penalizing term for slide transitions, therefore rewarding linear and non-jumpy slide transitions. Running the mavils algorithm, the user can choose between different options:
 
@@ -30,15 +31,15 @@ The jupyter_notbook folder includes code to reproduce the figures of the paper.
 
 ## How to run matching algorithm
 
-The matching algorithm can be found in the mavils folder. In order to run it, first install the neceasry packages (ideally in a new conda environment). This can be done with:
+The matching algorithm can be found in the mavils folder. In order to run it, first install the necessary packages (ideally in a new conda environment). This can be done with:
 
-``pip install requirements.txt``
+``pip install -r requirements.txt``
 
 Additionally, it is probably required for you to install tesseract on your computer and add the path to the tesseract.exe file to the script or create a 'local_settings.py' file like we've done it and store the path there. Then it can be easily imported with:
 
 ``from local_settings import path_to_tesseract``
 
-You should be all set now. In order to run the matching_algorithm.py script, direct to the mavils folder and run:
+In order to run the matching_algorithm.py script, direct to the 'mavils' folder and run:
 
 ``python matching_algorithm.py``
 
@@ -70,7 +71,7 @@ The following other options exist:
 
 A very easy way to run the code (but with limited settings) is to simply run the 'tkinter_app.py' file in the mavils folder with 
 ```python tkinter_app.py```
-One can upoload the necessary files via upload buttons. Processing can take a while, depending on length of video and local hardware. 
+One can upload the necessary files via the upload buttons. Processing can take a while, depending on length of video and local hardware. Please be aware that audio transcription is with faster-whisper with the 'tiny' model size. If you want to change this, you have to change this in the 'tkinter_app.py' file directly, e.g. model_size = "large".
 
 ## License
 We release this code under the Apache-2.0 license. 

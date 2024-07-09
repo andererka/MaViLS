@@ -8,17 +8,16 @@ from tqdm import tqdm
 import fitz
 from sklearn.model_selection import ParameterGrid
 import torch
-## dynamic programming approach:
 
 def calculate_dp_with_jumps(similarity_matrix, jump_penalty, linearity_penalty = 0.0000001):
-    """calculates the decision matrix DP according to a similarity matrix and a jump penality
+    """calculates the decision matrix D according to a similarity matrix and a jump penality
 
     Args:
         similarity_matrix (numpy matrix): matrix containing similarity scores for each pair of video frame and lecture slide
         jump_penalty (float): jump penality for punsihing large jumps back and forth within a lecture
 
     Returns:
-        list, matrix: list of indices to follow for an optimized sequence of slide numbers, decision matrix DP
+        list, matrix: list of indices to follow for an optimized sequence of slide numbers, decision matrix D
     """
     rows, cols = similarity_matrix.shape
     print('rows and cols', rows, cols)
@@ -30,11 +29,11 @@ def calculate_dp_with_jumps(similarity_matrix, jump_penalty, linearity_penalty =
     # go through every row and column
     for i in tqdm(range(1, rows + 1), desc='go through similarity matrix to calculate dp matrix'):   # frame chunks
         for j in range(1, cols + 1):  # number of slide pages
-            # enforce that slide  number is low for first frames and high for last frames
+            # initalize max value with minus infinity:
             max_value = -np.inf
             for k in range(1, cols + 1):
                 # jump penality should be scaled by size of jump between last index and current:                
-                if (k < j) and abs(k-j) > 0: #penality should be higher if jump is backward compared to forward
+                if (k < j) and abs(k-j) > 0: # penality is higher if jump is backward compared to forward
                     jump_penalty_scaled = jump_penalty * abs(k-j) * 2
                 elif (k > j) and abs(k-j) > 0:
                     jump_penalty_scaled = jump_penalty * abs(k-j)
@@ -57,7 +56,6 @@ def calculate_dp_with_jumps(similarity_matrix, jump_penalty, linearity_penalty =
             max_score = dp[rows][j]
             optimal_end = j
 
-    # Rückverfolgungsalgorithmus
     optimal_path = []
     i, j = rows, optimal_end
     while i > 0:
@@ -239,7 +237,7 @@ def combine_similarity_matrices(weights, matrices):
     return combined_matrix
 
 def objective_function(weights, matrices, jump_penalty):
-    """defines objective function for dynmaic programming decision matrix
+    """defines objective function for dynamic programming decision matrix
 
     Args:
         weights (list of floats): weights for weighted sum of matrices

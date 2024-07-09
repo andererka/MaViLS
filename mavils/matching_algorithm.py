@@ -23,12 +23,28 @@ import pytesseract
 pytesseract.pytesseract.tesseract_cmd = path_to_tesseract
 from tqdm import tqdm
 
+# This is the main script for running the mavils algorithm 
+
 def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/swiftformer-xs',
          sentence_model_name='sentence-transformers/distiluse-base-multilingual-cased', jump_penalty=0.1, merge_method='max', sift=False):
+    """ runs mavils matching algorithm and generates excel files that match video frames to audio transcript
 
-    # Load the sentence transformer model
+    Args:
+        video_path (str): path to video file
+        file_name (str): name for result file
+        file_path (str): path to PDF slide file
+        audio_script (str): path to audio transcript
+        autoimage_name (str, optional): Model name for image processor and model. Defaults to 'MBZUAI/swiftformer-xs'.
+        sentence_model_name (str, optional): Model name for sentence transformer. Defaults to 'sentence-transformers/distiluse-base-multilingual-cased'.
+        jump_penalty (float, optional): The higher, the more jumps are punished. Defaults to 0.1.
+        merge_method (str, optional): Method how to combinesimilarity matrices. 'max', 'mean' and 'weighted_sum' possible. Defaults to 'max'.
+        sift (bool, optional): Whether to run SIFT algorithm or not. Defaults to False.
+    """  
+
+    # Loads the sentence transformer model
     sentence_model = SentenceTransformer(sentence_model_name)
 
+    # Loads the image transformer model (e.g. Swiftformer class)
     image_processor = AutoImageProcessor.from_pretrained(autoimage_name)
     image_model = SwiftFormerModel.from_pretrained(autoimage_name)
 
@@ -40,23 +56,22 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
 
     time_start = datetime.now()
 
-    # Step 1: Extract frames from video
+    # Extract frames from video
     output_dict = generate_output_dict_by_sentence(audio_script)
 
-    # we take a frame according to the sentences of the audioscript. Possible is also to choose a higher resolution
+    # we take a frame according to single sentences of the audioscript. Possible is also to choose a higher resolution
     interval_list = list(output_dict.keys())
 
     frames = create_video_frames(video_path, interval_list)
 
-    print('len frames', len(frames))
-    # Step 2: Convert PDF to images
+    # Convert PDF to images
     pdf_file = fitz.open(file_path)
+
     # Iterate over PDF pages
     text_pdf = []
     pdf_images = []
     pdf_images_cv2 = []
     pil_images = []
-
 
     for page_index in tqdm(range(len(pdf_file)), desc='PDF pages are extracted'):
         # Get the page itself
@@ -79,8 +94,6 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
         pil_image.save('../pdf_images/{}_image.png'.format(page_index))
         pil_images.append(pil_image)
 
-    # Vectorize sentences
-    sentences1 = list(output_dict.values())
 
     pdf_file.close()
 
@@ -89,6 +102,8 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
     resized_frames = [cv2.resize(frame, (frame_width, frame_height)) for frame in tqdm(frames, desc='video frames are resized')]
 
     # get text features:
+    # Vectorize sentences
+    sentences1 = list(output_dict.values())
     audio_features = sentence_model.encode(sentences1, convert_to_tensor=True)
 
     image_texts = [pytesseract.image_to_string(image, lang='eng+ell+equ+deu') for image in tqdm(pil_images, desc='text is extracted from slide images')]
@@ -101,7 +116,7 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
 
     time_audio = datetime.now()
 
-    print('Time for audio algorithm', time_audio - time_start)
+    # stores time needed for caculating matching to 'time.txt' file.
     with open('time.txt', 'a') as file:
         file.write("Time for audio algorithm: {}\n".format(str(time_audio - time_start)))
 
@@ -120,8 +135,7 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
 
     time_image = datetime.now()
 
-    print('Time for image algorithm: ', time_image - time_start)
-
+    # stores time needed for caculating matching to 'time.txt' file.
     with open('time.txt', 'a') as file:
         file.write("Time for image algorithm: {}\n".format(str(time_image - time_start)))
 
@@ -135,30 +149,25 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
 
     time_ocr = datetime.now()
 
-    print('Time for ocr algorithm: ', time_ocr - time_start - (time_image-time_audio))
-
+    # stores time needed for caculating matching to 'time.txt' file.
     with open('time.txt', 'a') as file:
         file.write("Time for ocr algorithm: {}\n".format(str(time_ocr - time_start - (time_image-time_audio))))
-
-    print('similarity_matrix_audio.shape', similarity_matrix_audio.shape)
-    print('similarity_matrix_ocr.shape', similarity_matrix_ocr.shape)
-    print('similarity_matrix_image.shape', similarity_matrix_image.shape)
-
 
     result_dict_ocr = {}
     for chunk_index in optimal_path_ocr:
         result_dict_ocr[interval_list[chunk_index[0]]] =  chunk_index[1] + 1
 
     df_ocr = pd.DataFrame(list(result_dict_ocr.items()), columns=['Key', 'Value'])
+    
     # writing results regarding ocr to excel sheet
     df_ocr.to_excel('{}_ocr_{}.xlsx'.format(file_name, jump_penality_string), index=False, engine='openpyxl')
-
 
     result_dict_audio = {}
     for chunk_index in optimal_path_audio:
         result_dict_audio[interval_list[chunk_index[0]]] =  chunk_index[1] + 1
 
     df_audio = pd.DataFrame(list(result_dict_audio.items()), columns=['Key', 'Value'])
+    
     # writing results regarding audio to excel sheet
     df_audio.to_excel('{}_audiomatching_{}.xlsx'.format(file_name, jump_penality_string), index=False, engine='openpyxl')
 
@@ -167,9 +176,9 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
         result_dict_image[interval_list[chunk_index[0]]] =  chunk_index[1] + 1
 
     df_image = pd.DataFrame(list(result_dict_image.items()), columns=['Key', 'Value'])
+    
     # writing results regarding image features to excel sheet
     df_image.to_excel('{}_image_matching_{}.xlsx'.format(file_name, jump_penality_string), index=False, engine='openpyxl')
-
 
     if merge_method == 'mean':
         similarity_matrix_merged = np.mean((similarity_matrix_ocr, similarity_matrix_audio, similarity_matrix_image), axis=0)
@@ -193,6 +202,7 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
             result_dict[interval_list[chunk_index[0]]] =  chunk_index[1] + 1
 
         df = pd.DataFrame(list(result_dict.items()), columns=['Key', 'Value'])
+        
         # writing results regarding max merge to excel sheet
         df.to_excel('{}_max_matching_all_{}.xlsx'.format(file_name, jump_penality_string), index=False, engine='openpyxl')
 
@@ -204,11 +214,13 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
         for chunk_index in optimal_path:
             result_dict[interval_list[chunk_index[0]]] =  chunk_index[1] + 1
         time_mean = datetime.now()
-        print('Time for matching all with mean: ', time_mean - time_start)
+
+        # stores time needed for caculating matching to 'time.txt' file.
         with open('time.txt', 'a') as file:
             file.write("Time for matching all with mean algorithm: {}\n".format(str(time_mean - time_start)))
 
         df = pd.DataFrame(list(result_dict.items()), columns=['Key', 'Value'])
+        
         # writing results regarding mean merge to excel sheet
         df.to_excel('{}_mean_matching_all_{}.xlsx'.format(file_name, jump_penality_string), index=False, engine='openpyxl')
 
@@ -221,12 +233,11 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
 
         time_max = datetime.now()
 
-        print('Time for matching all with max: ', time_max - time_start - (time_mean-time_ocr))
-
         with open('time.txt', 'a') as file:
             file.write("Time for matching all with max: {}\n".format(str(time_max - time_start - (time_mean-time_ocr))))
 
         df = pd.DataFrame(list(result_dict.items()), columns=['Key', 'Value'])
+        
         # writing results regarding max merge to excel sheet
         df.to_excel('{}_max_matching_all_{}.xlsx'.format(file_name, jump_penality_string), index=False, engine='openpyxl')
 
@@ -244,16 +255,16 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
             result_dict[interval_list[chunk_index[0]]] =  chunk_index[1] + 1
 
         time_weights = datetime.now()
-        print('Time for matching all with weight: ', time_weights - time_start - (time_weights-time_mean))
         with open('time.txt', 'a') as file:
             file.write("Time for matching all with weight: {}\n".format(str(time_weights - time_start - (time_max-time_ocr))))
 
         df = pd.DataFrame(list(result_dict.items()), columns=['Key', 'Value'])
+        
         # writing results regarding weighted sum merge to excel sheet
         df.to_excel('{}_weighted_sum_matching_all_{}.xlsx'.format(file_name, jump_penality_string), index=False, engine='openpyxl')
 
+    ## weighted sum through gradient descent:
     elif merge_method == 'weighted_sum':
-        ## weighted sum through gradient descent:
         matrices = [similarity_matrix_ocr, similarity_matrix_audio, similarity_matrix_image]
 
         optimal_weights = gradient_descent_with_adam(matrices, jump_penalty, num_iterations=50)
@@ -267,6 +278,7 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
             result_dict[interval_list[chunk_index[0]]] =  chunk_index[1] + 1
 
         df = pd.DataFrame(list(result_dict.items()), columns=['Key', 'Value'])
+        
         # writing results regarding weighted sum merge to excel sheet
         df.to_excel('{}_weighted_sum_matching_all_{}_50iterations_with_adam.xlsx'.format(file_name, jump_penality_string), index=False, engine='openpyxl')
     
@@ -277,27 +289,24 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
 
         optimal_path, _ = calculate_dp_with_jumps(similarity_matrix_sift, jump_penalty)
 
-
         result_dict = {}
         for chunk_index in optimal_path:
             result_dict[interval_list[chunk_index[0]]] =  chunk_index[1] + 1
 
         time_sift2 = datetime.now()
 
-        print('calc time SIFT: ',  time_sift2 - time_sift1)
-
         with open('time.txt', 'a') as file:
             file.write("Time for SIFT: {}\n".format(str(time_sift2 - time_sift1)))
 
 
         df = pd.DataFrame(list(result_dict.items()), columns=['Key', 'Value'])
+
         # writing results regarding SIFT to excel sheet
         df.to_excel('{}_SIFT.xlsx'.format(file_name), index=False, engine='openpyxl')
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="This script matches videoframes to lecture slides")
-
 
     parser.add_argument('--sentence_model', nargs='?', default='sentence-transformers/distiluse-base-multilingual-cased', type=str, required=False,
                         help='sentence transformer model')

@@ -24,8 +24,6 @@ def generate_output_dict_by_word(file):
     # Find all matches in the input text
     matches = re.findall(pattern, input_text)
 
-    print(matches)
-
     # Initialize dictionary to store converted timestamps and corresponding text
     output_dict = {}
 
@@ -76,10 +74,8 @@ def generate_output_dict_by_sentence(file, output_file='../data/unlabeled_ground
         # conditional was necessary here because of slightly different formats of the audioscript files
         if ('cryptocurrency' in file) or  ('short_range' in file) or ('deeplearning' in file) or ('solar' in file) or  ('psychology' in file):  # ground truth files for these were only separated by '.' not by '?' or '!'
             condition = ('.' in text)
-            #print('condition 1')
         else:
             condition = ('.' in text) or ('?' in text) or ('!' in text)
-            #print('condition 2')
         if condition: 
         
             start_seconds = int(start_time[:2]) * 3600 + int(start_time[3:5]) * 60 + float(start_time[6:])
@@ -90,7 +86,7 @@ def generate_output_dict_by_sentence(file, output_file='../data/unlabeled_ground
             output_dict[middle] = text_string
 
             text_string = ""
-    # for last sentence if no punctuation at the end:
+
     start_seconds = int(start_time[:2]) * 3600 + int(start_time[3:5]) * 60 + float(start_time[6:])
     end_seconds = int(start_time[:2]) * 3600  + int(end_time[3:5]) * 60 + float(end_time[6:])
 
