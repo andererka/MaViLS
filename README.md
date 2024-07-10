@@ -4,7 +4,7 @@
 This repository presents the algorithm and evaluation, as well as the dataset for the paper above.
 
 ### Overview
-![Overview of MaViLS algorithm](overview.svg)
+![Overview of MaViLS algorithm](graphik_final.pdf)
 
 The algorithm aligns lecture videos with corresponding slides with a multimodal algorithm that uses audio, OCR and image features all together. The approach uses dynamic programming to include a penalizing term for slide transitions, therefore rewarding linear and non-jumpy slide transitions. Running the mavils algorithm, the user can choose between different options:
 
