@@ -12,9 +12,9 @@ The algorithm aligns lecture videos with corresponding slides with a multimodal 
 * merged feature algorithm (were the user can select between the method of merging the feature matrices. Please refer to the paper for an explanation on this. One can select between max, mean and weighted sum)
 
 
-### Structure of the code
+### Structure and data of the code
 
-The example dataset used is stored in the folder 'data'. As the lecture videos used are to large to upload to Github, you can get them on Kaggle under the following link: [kaggle link](https://kaggle.com/datasets/e98bcdecedc67af45204338260556f932f8ec426b81caed0130d2cce80c4ea84). A video folder with the according content therefore needs to be added to the data folder.
+The example dataset used is stored in the folder 'data'. As the lecture videos used are to large to upload to Github, you can get them on Kaggle under the following link: [kaggle link](https://kaggle.com/datasets/e98bcdecedc67af45204338260556f932f8ec426b81caed0130d2cce80c4ea84). A 'video' folder with the according content therefore needs to be added to the data folder.
 The dataset includes the audioscripts of the lectures (preprocessed with faster-whisper: https://github.com/SYSTRAN/faster-whisper), ground truth files in excel format that include the human labeled slide alignement for the video lectures, and the lecture themselves in pdf format.
 
 The evaluation folder includes the python scripts for calculating the F1, the recall and the precision scores. Lastly, the python script ```analyse_videos.py``` includes code to calculate the 'jumpiness' and the ratio between no slide and slide view of the video recordings according to the ground truth. 
