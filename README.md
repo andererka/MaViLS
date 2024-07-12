@@ -17,11 +17,11 @@ The algorithm aligns lecture videos with corresponding slides with a multimodal 
 The example dataset used is stored in the folder 'data'. As the lecture videos used are to large to upload to Github, you can get them on Kaggle under the following link: [kaggle link](https://kaggle.com/datasets/e98bcdecedc67af45204338260556f932f8ec426b81caed0130d2cce80c4ea84). A video folder with the according content therefore needs to be added to the data folder.
 The dataset includes the audioscripts of the lectures (preprocessed with faster-whisper: https://github.com/SYSTRAN/faster-whisper), ground truth files in excel format that include the human labeled slide alignement for the video lectures, and the lecture themselves in pdf format.
 
-The evaluation folder includes the python scripts for calculating the F1, the recall and the precision scores, as well as the label consistency between different (human) labelers. Lastly, the python script 'analyse_videos.py' includes code to calculate the 'jumpiness' and the ratio between no slide and slide view of the video recordings according to the ground truth. 
+The evaluation folder includes the python scripts for calculating the F1, the recall and the precision scores. Lastly, the python script ```analyse_videos.py``` includes code to calculate the 'jumpiness' and the ratio between no slide and slide view of the video recordings according to the ground truth. 
 
 The helpers folder includes relevant functions how to preprocess the audioscript and how to create the feature matrices and run dynamic programming for finding the optimal slide sequence according to a jump penalty. 
 
-The mavils folder includes the script 'matching_algorithm.py' that needs to be run in order to align pdf slides to the audioscript. A more thorough description is found below.
+The mavils folder includes the script ```matching_algorithm.py``` that needs to be run in order to align pdf slides to the audioscript. A more thorough description is found below.
 
 The results folder includes results from all the example lectures included in the data folder with different jump penalities and different merge methods to combine the feature matrices like it is described in the paper. 
 
