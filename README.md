@@ -1,7 +1,7 @@
 # MaViLS, a Benchmark Dataset for Video-to-Slide Alignment, Assessing Baseline Accuracy with a Multimodal Alignment Algorithm Leveraging Speech, OCR, and Visual Features
 *Katharina Anderer, Andreas Reich, Matthias Wölfel (2024)*
 
-This repository presents the algorithm and evaluation, as well as the dataset for the paper above.
+This repository presents the algorithm and evaluation, as well as the dataset for the paper above. A link to the paper will be added soon here.
 
 ### Overview
 ![Overview of MaViLS algorithm](graphik_final.svg)
@@ -77,7 +77,7 @@ One can upload the necessary files via the upload buttons. Processing can take a
 We release this code under the Apache-2.0 license. 
 
 ## Citations
-Please cite this work with..
+Please cite this work with..(to be added)
 
 
 
