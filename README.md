@@ -77,7 +77,7 @@ One can upload the necessary files via the upload buttons. Processing can take a
 We release this code under the Apache-2.0 license. 
 
 ## Citations
-Please cite this work with..(to be added)
+Please cite this work as: Anderer, K., Reich, A., Wölfel, M. (2024) MaViLS, a Benchmark Dataset for Video-to-Slide Alignment, Assessing Baseline Accuracy with a Multimodal Alignment Algorithm Leveraging Speech, OCR, and Visual Features. Proc. Interspeech 2024, 1375-1379, doi: 10.21437/Interspeech.2024-978
 
 
 
