@@ -90,6 +90,8 @@ def create_video_frames(video_path, interval_list, save_frames=False):
     frames = []  # Store frames
     timestamps = []  # Store timestamps of captured frames for debugging or verification
     cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        raise FileNotFoundError(f"Could not open video: {video_path}")
     if save_frames:
         os.makedirs('../frame_images', exist_ok=True)
 
@@ -101,6 +103,9 @@ def create_video_frames(video_path, interval_list, save_frames=False):
 
         if not ret:
             print(f"Failed to capture frame at {interval} seconds.")
+            if not frames:
+                # there is no earlier frame to fall back to
+                raise ValueError(f"Could not read the first frame (at {interval} seconds) of video: {video_path}")
             # in case capture fails, append frames with last frame in order to get equal length for arrays later on
             frames.append(frames[-1])
             continue
