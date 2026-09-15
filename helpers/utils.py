@@ -1,5 +1,6 @@
 import sys
 sys.path.append('../')
+import os
 import numpy as np
 import cv2
 from scipy.spatial.distance import cosine
@@ -85,18 +86,21 @@ def compute_similarity_matrix(embeddings1, embeddings2):
 
     return similarity_matrix
 
-def create_video_frames(video_path, interval_list):
+def create_video_frames(video_path, interval_list, save_frames=False):
     """Create video frames according to the time distances stored in interval_list
 
     Args:
         video_path (_str_): _path to video_
         interval_list (_type_): _defines intervals of frames. Can be individualized according to audioscript chunks_
+        save_frames (bool, optional): whether to also write every frame as an uncompressed PNG to '../frame_images' for debugging. Defaults to False.
     """
     # Process videos and store frames
     frames = []  # Store frames
     timestamps = []  # Store timestamps of captured frames for debugging or verification
     cap = cv2.VideoCapture(video_path)
-    
+    if save_frames:
+        os.makedirs('../frame_images', exist_ok=True)
+
     for interval in interval_list:
         # Set video position to the current interval time
         cap.set(cv2.CAP_PROP_POS_MSEC, interval * 1000)
@@ -114,7 +118,8 @@ def create_video_frames(video_path, interval_list):
         timestamps.append(current_time)  # Append the timestamp for debugging
         
         # For debugging: Save frames as images (optional)
-        cv2.imwrite('../frame_images/{}.png'.format(str(len(frames))), frame, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+        if save_frames:
+            cv2.imwrite('../frame_images/{}.png'.format(str(len(frames))), frame, [cv2.IMWRITE_PNG_COMPRESSION, 0])
 
     cap.release()  # Release the video capture object
     
