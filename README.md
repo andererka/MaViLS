@@ -59,6 +59,8 @@ The following other options exist:
 
 * --sift that is either false or true, depending whether one want to run the SIFT algorithm for comparison. This is much time-consuming if set to true.
 
+* --save_frames that is either false (default) or true. If true, every extracted video frame is additionally written as an uncompressed PNG to the 'frame_images' folder for debugging (this can take several GB per lecture).
+
 * --audio_script. Path to the audioscript
 
 * --file_path. Path to the lecture PDF

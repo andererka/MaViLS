@@ -1,3 +1,4 @@
+import os
 import sys
 sys.path.append('../')
 from helpers.prepare_audioscript import generate_output_dict_by_sentence
@@ -26,7 +27,8 @@ from tqdm import tqdm
 # This is the main script for running the mavils algorithm 
 
 def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/swiftformer-xs',
-         sentence_model_name='sentence-transformers/distiluse-base-multilingual-cased', jump_penalty=0.1, merge_method='max', sift=False):
+         sentence_model_name='sentence-transformers/distiluse-base-multilingual-cased', jump_penalty=0.1, merge_method='max', sift=False,
+         save_frames=False):
     """ runs mavils matching algorithm and generates excel files that match video frames to audio transcript
 
     Args:
@@ -39,7 +41,8 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
         jump_penalty (float, optional): The higher, the more jumps are punished. Defaults to 0.1.
         merge_method (str, optional): Method how to combinesimilarity matrices. 'max', 'mean' and 'weighted_sum' possible. Defaults to 'max'.
         sift (bool, optional): Whether to run SIFT algorithm or not. Defaults to False.
-    """  
+        save_frames (bool, optional): Whether to write extracted video frames to '../frame_images' for debugging. Defaults to False.
+    """
 
     # Loads the sentence transformer model
     sentence_model = SentenceTransformer(sentence_model_name)
@@ -62,7 +65,7 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
     # we take a frame according to single sentences of the audioscript. Possible is also to choose a higher resolution
     interval_list = list(output_dict.keys())
 
-    frames = create_video_frames(video_path, interval_list)
+    frames = create_video_frames(video_path, interval_list, save_frames=save_frames)
 
     # Convert PDF to images
     pdf_file = fitz.open(file_path)
@@ -72,6 +75,7 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
     pdf_images = []
     pdf_images_cv2 = []
     pil_images = []
+    os.makedirs('../pdf_images', exist_ok=True)
 
     for page_index in tqdm(range(len(pdf_file)), desc='PDF pages are extracted'):
         # Get the page itself
@@ -304,20 +308,26 @@ def main(video_path, file_name, file_path, audio_script, autoimage_name='MBZUAI/
         # writing results regarding SIFT to excel sheet
         df.to_excel('{}_SIFT.xlsx'.format(file_name), index=False, engine='openpyxl')
 
+def str2bool(value):
+    # argparse's type=bool treats any non-empty string (including 'False') as True
+    return str(value).lower() in ('true', '1', 'yes')
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="This script matches videoframes to lecture slides")
 
     parser.add_argument('--sentence_model', nargs='?', default='sentence-transformers/distiluse-base-multilingual-cased', type=str, required=False,
                         help='sentence transformer model')
-    parser.add_argument('--jump_penalty', nargs='?', default=0.1, type=str, required=False,
+    parser.add_argument('--jump_penalty', nargs='?', default=0.1, type=float, required=False,
                         help='penality for large jumps')
     parser.add_argument('--autoimage_name', nargs='?', default="MBZUAI/swiftformer-xs", type=str, required=False,
                         help='model for visual features')
     parser.add_argument('--merge_method', nargs='?', default='max', type=str, required=False,
                         help='merge method for different features; either mean or max')
-    parser.add_argument('--sift', nargs='?', default=False, type=bool, required=False,
+    parser.add_argument('--sift', nargs='?', default=False, type=str2bool, required=False,
                         help='running SIFT argument or not. Default is False')
+    parser.add_argument('--save_frames', nargs='?', default=False, type=str2bool, required=False,
+                        help='save extracted video frames as PNGs to ../frame_images for debugging. Default is False')
     parser.add_argument('--audio_script', default='../data/audioscripts/numerics_hennig.srt', type=str, required=False,
                         help='path to audioscript')
     parser.add_argument('--file_path', default='../data/lectures/numerics.pdf', type=str, required=False,
@@ -331,6 +341,6 @@ if __name__ == '__main__':
 
     main(video_path = args.video_path, file_name=args.file_name,
          file_path=args.file_path, audio_script=args.audio_script, 
-         sift=args.sift, merge_method=args.merge_method, autoimage_name=args.autoimage_name, 
-         jump_penalty=args.jump_penaty, sentence_model=args.sentence_model)
+         sift=args.sift, merge_method=args.merge_method, autoimage_name=args.autoimage_name,
+         jump_penalty=args.jump_penalty, sentence_model_name=args.sentence_model, save_frames=args.save_frames)
 
