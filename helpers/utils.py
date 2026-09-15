@@ -24,44 +24,36 @@ def calculate_dp_with_jumps(similarity_matrix, jump_penalty, linearity_penalty =
     print('rows and cols', rows, cols)
     # dp matrix is initalized with 0s
     dp = np.zeros((rows + 1, cols + 1))
-    path = {}
-    max_index = 0
-    
-    # go through every row and column
+    # path[i][j] stores the (1-based) slide index k that was chosen as predecessor of cell (i, j)
+    path = np.zeros((rows + 1, cols + 1), dtype=np.int64)
+
+    # jump penality for every pair of slide j (rows) and candidate slide k (columns), scaled by size of jump.
+    # penality is higher if jump is backward compared to forward, and 0 if k == j
+    slide_indices = np.arange(1, cols + 1)
+    jump_sizes = np.abs(slide_indices[None, :] - slide_indices[:, None])
+    jump_penalty_scaled = jump_penalty * jump_sizes.astype(float)
+    jump_penalty_scaled[slide_indices[None, :] < slide_indices[:, None]] *= 2
+
+    # go through every row; all slide pairs (j, k) of a row are evaluated at once.
+    # Same arithmetic (and order of operations) as the former triple loop, so results are bit-identical.
     for i in tqdm(range(1, rows + 1), desc='go through similarity matrix to calculate dp matrix'):   # frame chunks
-        for j in range(1, cols + 1):  # number of slide pages
-            # initalize max value with minus infinity:
-            max_value = -np.inf
-            for k in range(1, cols + 1):
-                # jump penality should be scaled by size of jump between last index and current:                
-                if (k < j) and abs(k-j) > 0: # penality is higher if jump is backward compared to forward
-                    jump_penalty_scaled = jump_penalty * abs(k-j) * 2
-                elif (k > j) and abs(k-j) > 0:
-                    jump_penalty_scaled = jump_penalty * abs(k-j)
-                else:
-                    jump_penalty_scaled = 0
-                expected_frame_index = 1 + (rows/(cols-1)) * i
-                linearity_penalty_scaled = linearity_penalty * abs(k - expected_frame_index)
-                current_value = similarity_matrix[i - 1][k - 1] - linearity_penalty_scaled - (jump_penalty_scaled if k != j else 0) + dp[i - 1][k]
-                if current_value > max_value:
-                    max_value = current_value
-                    max_index = k
-            dp[i][j] = max_value
-            path[(i, j)] = (i - 1, max_index)
+        expected_frame_index = 1 + (rows/(cols-1)) * i
+        linearity_penalty_scaled = linearity_penalty * np.abs(slide_indices - expected_frame_index)
+        current_values = (similarity_matrix[i - 1] - linearity_penalty_scaled)[None, :] - jump_penalty_scaled + dp[i - 1][1:][None, :]
+        # argmax takes the first maximum, like the strict '>' comparison of the former loop
+        max_indices = np.argmax(current_values, axis=1)
+        dp[i][1:] = current_values[np.arange(cols), max_indices]
+        path[i][1:] = max_indices + 1
 
     # trace back paths to find the one with the highest correlation:
-    max_score = -np.inf
-    optimal_end = 0
-    for j in range(1, cols + 1):
-        if dp[rows][j] > max_score:
-            max_score = dp[rows][j]
-            optimal_end = j
+    optimal_end = int(np.argmax(dp[rows][1:])) + 1
 
     optimal_path = []
     i, j = rows, optimal_end
     while i > 0:
-        optimal_path.append((i - 1, path[(i, j)][1] - 1))
-        i, j = path[(i, j)]
+        previous_slide = int(path[i][j])
+        optimal_path.append((i - 1, previous_slide - 1))
+        i, j = i - 1, previous_slide
 
     return list(reversed(optimal_path)), dp
 
