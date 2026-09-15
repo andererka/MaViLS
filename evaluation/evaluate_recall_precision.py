@@ -25,7 +25,7 @@ def new_row(row_name='None'):
 
 print('deep learning Goodfellow lecture')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_deeplearning.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_deeplearning.xlsx')
 df2 = pd.read_excel('../results/DL_matching_with_all_jump_penality_0comma1.xlsx')
 df3 = pd.read_excel('../results/DL_matching_with_ocr_penality_0comma1.xlsx')
 df4 = pd.read_excel('../results/DL_matching_with_audioscript_jp_0comma1.xlsx')
@@ -97,7 +97,7 @@ for df, name in zip(result_dfs, df_names):
 
 print('short range MIT lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_short_range_mit.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_short_range.xlsx')
 df2 = pd.read_excel('../results/short_range_MIT_matching_with_all_0comma1.xlsx')
 df3 = pd.read_excel('../results/short_range_MIT_matching_with_all_0comma2.xlsx')
 df4 = pd.read_excel('../results/short_range_MIT_matching_with_all_0comma0.xlsx')
@@ -160,7 +160,7 @@ for df, name in zip(result_dfs, df_names):
 
 print('numerics lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_numerics.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_numerics.xlsx')
 df2 = pd.read_excel('../results/numerics_tuebingen_matching_with_all_0comma0_max.xlsx')
 df3 = pd.read_excel('../results/numerics_tuebingen_matching_with_all_0comma1_max.xlsx')
 df4 = pd.read_excel('../results/numerics_tuebingen_matching_with_all_0comma2_max.xlsx')
@@ -224,7 +224,7 @@ for df, name in zip(result_dfs, df_names):
 
 print('reinforcement learning lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_reinforcement_learning_silver.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_reinforcement_learning.xlsx')
 df2 = pd.read_excel('../results/reinforcement_matching_with_all_0comma1_max.xlsx')
 df3 = pd.read_excel('../results/reinforcement_matching_with_all_0comma1_mean.xlsx')
 df4 = pd.read_excel('../results/reinforcement_matching_with_all_0comma0_mean.xlsx')
@@ -287,7 +287,7 @@ for df, name in zip(result_dfs, df_names):
 
 print('computer vision lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_computer_vision_2_2.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_computer_vision_2_2.xlsx')
 df2 = pd.read_excel('../results/computer_vision_2_2_matching_with_all_0comma1.xlsx')
 df3 = pd.read_excel('../results/computer_vision_2_2_matching_with_all_0comma0.xlsx')
 df4 = pd.read_excel('../results/computer_vision_max_matching_all_0comma2.xlsx')
@@ -350,7 +350,7 @@ for df, name in zip(result_dfs, df_names):
 
 print('cities and climate lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_climate_and_cities.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_climate_and_cities.xlsx')
 df2 = pd.read_excel('../results/cities_and_climate_matching_with_all_0comma0_max.xlsx')
 df3 = pd.read_excel('../results/cities_and_climate_matching_with_all_0comma1_max.xlsx')
 df4 = pd.read_excel('../results/cities_and_climate_matching_with_all_0comma1_mean.xlsx')
@@ -417,7 +417,7 @@ for df, name in zip(result_dfs, df_names):
 
 print('cities and decarbonization lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_cities_and_decarbonization.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_cities_and_decarbonization.xlsx')
 df2 = pd.read_excel('../results/cities_and_decarbonization_matching_with_all_0comma0_max.xlsx')
 df3 = pd.read_excel('../results/cities_and_decarbonization_matching_with_all_0comma0_mean.xlsx')
 df4 = pd.read_excel('../results/cities_and_decarbonization_matching_with_all_0comma1_max.xlsx')
@@ -480,7 +480,7 @@ for df, name in zip(result_dfs, df_names):
 
 print('cryptocurrency lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_cryptocurrency_MIT.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_cryptocurrency_MIT.xlsx')
 df2 = pd.read_excel('../results/cryptocurrency_matching_with_all_0comma0_max.xlsx')
 df3 = pd.read_excel('../results/cryptocurrency_matching_with_all_0comma0_mean.xlsx')
 df4 = pd.read_excel('../results/cryptocurrency_matching_with_all_0comma1_max.xlsx')
@@ -543,7 +543,7 @@ for df, name in zip(result_dfs, df_names):
 
 print('solar resource lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_solar_resource.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_solar_resource.xlsx')
 df2 = pd.read_excel('../results/solar_resource_mean_matching_all_0comma0.xlsx')
 df3 = pd.read_excel('../results/solar_resource_mean_matching_all_0comma1.xlsx')
 
@@ -611,7 +611,7 @@ for df, name in zip(result_dfs, df_names):
 
 print('psychology lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_psychology_MIT.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_psychology.xlsx')
 
 df2 = pd.read_excel('../results/psychology_mean_matching_all_0comma0.xlsx')
 df3 = pd.read_excel('../results/psychology_mean_matching_all_0comma1.xlsx')
@@ -676,7 +676,7 @@ for df, name in zip(result_dfs, df_names):
 
 print('creating breakthrough products lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_creating_breakthrough_products_MIT.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_creating_breakthrough_products_MIT.xlsx')
 df2 = pd.read_excel('../results/creating_breakthrough_products_audiomatching_0comma0.xlsx')
 df3 = pd.read_excel('../results/creating_breakthrough_products_audiomatching_0comma1.xlsx')
 df4 = pd.read_excel('../results/creating_breakthrough_products_image_matching_0comma0.xlsx')
@@ -742,7 +742,7 @@ for df, name in zip(result_dfs, df_names):
 
 print('image processing lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_image_processing.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_image_processing.xlsx')
 df2 = pd.read_excel('../results/image_processing_mean_matching_all_0comma0.xlsx')
 df3 = pd.read_excel('../results/image_processing_mean_matching_all_0comma1.xlsx')
 df4 = pd.read_excel('../results/image_processing_max_matching_all_0comma0.xlsx')
@@ -807,7 +807,7 @@ for df, name in zip(result_dfs, df_names):
 
 print('sensory systems lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_sensory_system.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_sensory_systems.xlsx')
 df2 = pd.read_excel('../results/sensory_systems_mean_matching_all_0comma0.xlsx')
 df3 = pd.read_excel('../results/sensory_systems_mean_matching_all_0comma1.xlsx')
 df4 = pd.read_excel('../results/sensory_systems_max_matching_all_0comma0.xlsx')
@@ -876,7 +876,7 @@ df_F1.to_excel('results_F1.xlsx', index=False, engine='openpyxl')
 
 print('ML for health lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_ML_for_health_MIT.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_ML_for_health_MIT.xlsx')
 df2 = pd.read_excel('../results/ML_for_health_mean_matching_all_0comma0.xlsx')
 df3 = pd.read_excel('../results/ML_for_health_mean_matching_all_0comma1.xlsx')
 df4 = pd.read_excel('../results/ML_for_health_max_matching_all_0comma0.xlsx')
@@ -947,7 +947,7 @@ df_F1.to_excel('results_F1.xlsx', index=False, engine='openpyxl')
 
 print('Climate and policy lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_climate_science_policy_MIT2.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_climate_science_policy_MIT2.xlsx')
 df2 = pd.read_excel('../results/climate_and_policies_mean_matching_all_0comma0.xlsx')
 df3 = pd.read_excel('../results/climate_and_policies_mean_matching_all_0comma1.xlsx')
 df4 = pd.read_excel('../results/climate_and_policies_max_matching_all_0comma0.xlsx')
@@ -1017,7 +1017,7 @@ df_F1.to_excel('results_F1.xlsx', index=False, engine='openpyxl')
 
 print('theory of computation lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_theory_of_computation_MIT.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_theory_of_computation.xlsx')
 df2 = pd.read_excel('../results/theory_of_computation_mean_matching_all_0comma0.xlsx')
 df3 = pd.read_excel('../results/theory_of_computation_mean_matching_all_0comma1.xlsx')
 df4 = pd.read_excel('../results/theory_of_computation_max_matching_all_0comma0.xlsx')
@@ -1087,7 +1087,7 @@ df_F1.to_excel('results_F1.xlsx', index=False, engine='openpyxl')
 
 print('Physics lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_physics.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_physics.xlsx')
 df2 = pd.read_excel('../results/physics_mean_matching_all_0comma0.xlsx')
 df3 = pd.read_excel('../results/physics_mean_matching_all_0comma1.xlsx')
 df4 = pd.read_excel('../results/physics_max_matching_all_0comma0.xlsx')
@@ -1157,7 +1157,7 @@ df_F1.to_excel('results_F1.xlsx', index=False, engine='openpyxl')
 
 print('Phonetics lecture:\n')
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_phonetics.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_phonetics.xlsx')
 df2 = pd.read_excel('../results/phonetics_mean_matching_all_0comma0.xlsx')
 df3 = pd.read_excel('../results/phonetics_mean_matching_all_0comma1.xlsx')
 df4 = pd.read_excel('../results/phonetics_max_matching_all_0comma0.xlsx')
@@ -1227,7 +1227,7 @@ df_F1.to_excel('results_F1.xlsx', index=False, engine='openpyxl')
 
 print('Team dynamics lecture:\n')  
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_team_dynamics_game_design_MIT.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_team_dynamics_game_design_MIT.xlsx')
 df2 = pd.read_excel('../results/team_dynamics_game_design_mean_matching_all_0comma0.xlsx')
 df3 = pd.read_excel('../results/team_dynamics_game_design_mean_matching_all_0comma1.xlsx')
 df4 = pd.read_excel('../results/team_dynamics_game_design_max_matching_all_0comma0.xlsx')
@@ -1297,7 +1297,7 @@ df_F1.to_excel('results_F1.xlsx', index=False, engine='openpyxl')
 
 print('Cognitive robotics lecture:\n')  
 # Load the Excel files
-df1 = pd.read_excel('../ground_truth_files/ground_truth_cognitive_robotics_MIT_control.xlsx')
+df1 = pd.read_excel('../data/ground_truth_files/ground_truth_cognitive_robotics_MIT_control.xlsx')
 df2 = pd.read_excel('../results/cognitive_robotics_mean_matching_all_0comma0.xlsx')
 df3 = pd.read_excel('../results/cognitive_robotics_mean_matching_all_0comma1.xlsx')
 df4 = pd.read_excel('../results/cognitive_robotics_max_matching_all_0comma0.xlsx')
