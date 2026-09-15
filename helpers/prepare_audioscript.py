@@ -3,6 +3,17 @@ import sys
 import pandas as pd
 sys.path.append('../')
 
+def timestamp_to_seconds(timestamp):
+    """converts a timestamp of the audioscript like '01:02:03.456' to seconds
+
+    Args:
+        timestamp (str): timestamp in format hh:mm:ss.mmm
+
+    Returns:
+        float: seconds
+    """
+    return int(timestamp[:2]) * 3600 + int(timestamp[3:5]) * 60 + float(timestamp[6:])
+
 def generate_output_dict_by_word(file):
     """generates dictionary with time of video recording as key and audio text said by the lecturer at this time as value.
 
@@ -32,9 +43,9 @@ def generate_output_dict_by_word(file):
         start_time = match[0]
         end_time = match[1]
         text = match[2]
-        end_seconds = int(start_time[:2]) * 3600  + int(end_time[3:5]) * 60 + float(end_time[6:])
-        
-        output_dict[end_seconds] = text  
+        end_seconds = timestamp_to_seconds(end_time)
+
+        output_dict[end_seconds] = text
 
     return output_dict
 
@@ -76,22 +87,22 @@ def generate_output_dict_by_sentence(file, output_file='../data/unlabeled_ground
             condition = ('.' in text)
         else:
             condition = ('.' in text) or ('?' in text) or ('!' in text)
-        if condition: 
-        
-            start_seconds = int(start_time[:2]) * 3600 + int(start_time[3:5]) * 60 + float(start_time[6:])
-            end_seconds = int(start_time[:2]) * 3600  + int(end_time[3:5]) * 60 + float(end_time[6:])
+        if condition:
+
+            start_seconds = timestamp_to_seconds(start_time)
+            end_seconds = timestamp_to_seconds(end_time)
 
             middle = (end_seconds + start_seconds) / 2
-            
+
             output_dict[middle] = text_string
 
             text_string = ""
 
-    start_seconds = int(start_time[:2]) * 3600 + int(start_time[3:5]) * 60 + float(start_time[6:])
-    end_seconds = int(start_time[:2]) * 3600  + int(end_time[3:5]) * 60 + float(end_time[6:])
+    start_seconds = timestamp_to_seconds(start_time)
+    end_seconds = timestamp_to_seconds(end_time)
 
     middle = (end_seconds + start_seconds) / 2
-    
+
     output_dict[middle] = text_string
 
     # create pandas dataframe
