@@ -125,6 +125,21 @@ def available_memory_mb():
         if ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(status)):
             return status.ullAvailPhys / 2**20
         return None
+    if sys.platform == 'darwin':
+        # macOS has no MemAvailable; 'free + inactive' pages are what can be handed out without
+        # swapping (the definition psutil uses). Deliberately conservative: purgeable and
+        # speculative pages are reclaimable too, but counting them would weaken the guard.
+        try:
+            page_size = int(subprocess.run(['sysctl', '-n', 'hw.pagesize'], capture_output=True,
+                                           text=True, check=True).stdout)
+            stats = subprocess.run(['vm_stat'], capture_output=True, text=True, check=True).stdout
+        except (OSError, subprocess.CalledProcessError, ValueError):
+            return None
+        pages = 0
+        for line in stats.splitlines():
+            if line.startswith(('Pages free:', 'Pages inactive:')):
+                pages += int(line.split(':')[1].strip().rstrip('.'))
+        return pages * page_size / 2**20
     try:
         with open('/proc/meminfo') as f:
             for line in f:
@@ -269,6 +284,7 @@ def main():
     jp_file = str(args.jump_penalty).replace('.', 'comma')  # naming used by matching_algorithm.py
     authors = pd.read_excel(AUTHORS_F1).set_index('Lecture name')
     commit = git_commit()
+    warned_no_memory_check = False
 
     if args.list:
         print(f'{"lecture":32s} {"frames":>6s} {"pages":>5s} {"RAM GB":>6s}  {"done":4s}  video / problems')
@@ -293,6 +309,10 @@ def main():
                 print(f'[{name}] skipped: ' + '; '.join(info['problems']), flush=True)
                 continue
             available = available_memory_mb()
+            if available is None and not args.no_memory_check and not warned_no_memory_check:
+                print(f'warning: cannot determine the available RAM on {sys.platform}, '
+                      f'running without the memory check', flush=True)
+                warned_no_memory_check = True
             if not args.no_memory_check and available is not None and info['ram_mb'] > args.memory_fraction * available:
                 print(f'[{name}] skipped: needs ~{info["ram_mb"] / 1024:.1f} GB RAM, '
                       f'{available / 1024:.1f} GB available (use a bigger machine or --no_memory_check)', flush=True)
