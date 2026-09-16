@@ -1,6 +1,5 @@
 /video/
 /local_settings.py
-*png
 /dataset_MaViLS
 split_page.py
 /data/video
